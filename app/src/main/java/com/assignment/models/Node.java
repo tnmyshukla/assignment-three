@@ -18,6 +18,7 @@ public class Node {
     /**
      * Hashmap to store additional information for each node.
      */
+    @SuppressWarnings("PMD.UseConcurrentHashMap")
     private Map<String,String>map=new HashMap<>();
 
     /**

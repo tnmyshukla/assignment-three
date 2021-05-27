@@ -6,7 +6,7 @@ package com.assignment;
 /**
  * Main class declaration from which whole program begins
  */
-public class App {
+public final class App {
 
     /**
      * Main program which takes command line arguments
@@ -15,6 +15,9 @@ public class App {
     public static void main(final String[] args) {
         final UserManager userManager=new UserManager();
         userManager.startManager();
+
+    }
+    private App(){
 
     }
 

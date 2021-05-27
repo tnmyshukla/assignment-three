@@ -226,7 +226,7 @@ public class UserManager {
      * This method is used to add a new node to graph with no dependencies.
      */
     @SuppressWarnings("PMD.SystemPrintln")
-    public void addNode(){
+    public void addNode(final Graph graph){
         try (Scanner scanner = new Scanner(System.in)) {
             int nodeId ;
             System.out.println(MESSAGE1);
@@ -235,7 +235,13 @@ public class UserManager {
                 if (nodeId < 0 || nodeId > 9999) {
                     System.out.println(MESSAGE2);
                 } else {
+                    if(graph.addNode(nodeId)){
+
                     System.out.println("Added");
+                    }
+                    else{
+                        System.out.println("Node already exists");
+                    }
                 }
             } else {
                 throw new InvalidInputException(MESSAGE3);
@@ -282,7 +288,7 @@ public class UserManager {
                         addDependency(graph);
                         break;
                     case 8:
-                        addNode();
+                        addNode(graph);
                         break;
                     case 9:
                         return;

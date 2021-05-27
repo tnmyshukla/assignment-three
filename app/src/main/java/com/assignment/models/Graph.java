@@ -2,33 +2,36 @@ package com.assignment.models;
 
 import com.assignment.exceptions.InvalidInputException;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 /**
  * Graph class stores all the functionalities and attributes of graph.
  */
 public class Graph {
     /**
+     * Message when invalid node id is provided.
+     */
+    private final static String MESSAGE="node id does not exist";
+    /**
      * Stores directed graph of parents.
      */
-    private final List<ArrayList<Integer>>parent= new ArrayList<>();
+    @SuppressWarnings("PMD.UseConcurrentHashMap")
+    private final Map<Integer,ArrayList<Integer>>parent= new HashMap<>();
     /**
      * Stores directed graph of children.
      */
-    private final List<ArrayList<Integer>>child= new ArrayList<>();
+    @SuppressWarnings("PMD.UseConcurrentHashMap")
+    private final Map<Integer,ArrayList<Integer>>child= new HashMap<>();
     /**
      * Stores details of each node.
      */
     private final List<Node>nodes=new ArrayList<>();
 
-    public List<ArrayList<Integer>> getChild() {
+    public Map<Integer, ArrayList<Integer>> getChild() {
         return child;
     }
 
-    public List<ArrayList<Integer>> getParent() {
+    public Map<Integer, ArrayList<Integer>> getParent() {
         return parent;
     }
 
@@ -41,8 +44,8 @@ public class Graph {
      */
     public Graph(){
         for (int i = 0; i < 10_000; i++) {
-            parent.add(new ArrayList<Integer>());
-            child.add(new ArrayList<Integer>());
+//            parent.put(i, new ArrayList<>());
+//            child.put(i, new ArrayList<>());
             nodes.add(new Node(i));
         }
     }
@@ -50,7 +53,8 @@ public class Graph {
     /**
      * This method takes initial input of graph.
      */
-    @SuppressWarnings("PMD.SystemPrintln")
+    @SuppressWarnings({"PMD.SystemPrintln","PMD.AvoidInstantiatingObjectsInLoops"})
+
     public void inputGraph(){
         System.out.println("Enter number of edges");
         try (Scanner scanner = new Scanner(System.in)) {
@@ -73,6 +77,7 @@ public class Graph {
                 if (par < 0 || par > 9999) {
                     throw new InvalidInputException("Invalid nodeId for parent");
                 }
+
                 System.out.println("Enter child");
                 if(scanner.hasNextInt()){
                     chi= scanner.nextInt();
@@ -83,6 +88,8 @@ public class Graph {
                 if (chi < 0 || chi > 9999) {
                     throw new InvalidInputException("Invalid nodeId for child");
                 }
+                child.computeIfAbsent(par, k -> new ArrayList<>());
+                parent.computeIfAbsent(chi, k -> new ArrayList<>());
                 parent.get(chi).add(par);
                 child.get(par).add(chi);
             }
@@ -95,6 +102,9 @@ public class Graph {
      * @return list of parents
      */
     public List<Integer>getImmediateParents(final int nodeId){
+        if(!(parent.containsKey(nodeId) || child.containsKey(nodeId))){
+            throw new InvalidInputException(MESSAGE);
+        }
         return parent.get(nodeId);
     }
 
@@ -104,12 +114,18 @@ public class Graph {
      * @return list of parents
      */
     public List<Integer>getImmediateChildren(final int nodeId){
+        if(!(parent.containsKey(nodeId) || child.containsKey(nodeId))){
+            throw new InvalidInputException(MESSAGE);
+        }
         return child.get(nodeId);
     }
     
-    private void dfs(final int nodeId,final List<Boolean>visited,final List<ArrayList<Integer>>neighbor,final List<Integer>res){
+    private void dfs(final int nodeId,final List<Boolean>visited,final Map<Integer,ArrayList<Integer>>neighbor,final List<Integer>res){
         visited.set(nodeId,true);
         res.add(nodeId);
+        if(neighbor.get(nodeId)==null){
+            neighbor.put(nodeId,new ArrayList<>());
+        }
         for (final Integer c: neighbor.get(nodeId)) {
             if(!visited.get(c)){
                 dfs(c,visited,neighbor,res);
@@ -123,6 +139,9 @@ public class Graph {
      * @return  list of ancestors
      */
     public List<Integer>getAncestors(final int nodeId){
+        if(!(parent.containsKey(nodeId) || child.containsKey(nodeId))){
+            throw new InvalidInputException(MESSAGE);
+        }
             final ArrayList<Integer>res=new ArrayList<>();
             final ArrayList<Boolean>visited=new ArrayList<>(Collections.nCopies(10_000, false));
 
@@ -138,6 +157,9 @@ public class Graph {
      * @return list of descendants
      */
     public List<Integer>getDescendants(final int nodeId){
+        if(!(parent.containsKey(nodeId) || child.containsKey(nodeId))){
+            throw new InvalidInputException(MESSAGE);
+        }
         final ArrayList<Integer>res=new ArrayList<>();
         final ArrayList<Boolean>visited=new ArrayList<>(Collections.nCopies(10_000, false));
 
@@ -153,6 +175,12 @@ public class Graph {
      * @param chi child node id
      */
     public void deleteDependency(final int par,final int chi){
+        if(!(parent.containsKey(par) || child.containsKey(par))){
+            throw new InvalidInputException(MESSAGE);
+        }
+        if(!(parent.containsKey(chi) || child.containsKey(chi))){
+            throw new InvalidInputException(MESSAGE);
+        }
         final Integer p= par;
         final Integer c= chi;
         parent.get(chi).remove(p);
@@ -164,6 +192,9 @@ public class Graph {
      * @param nodeId to be deleted
      */
     public void deleteNode(final int nodeId){
+        if(!(parent.containsKey(nodeId) || child.containsKey(nodeId))){
+            throw new InvalidInputException(MESSAGE);
+        }
         for(final int c:parent.get(nodeId)){
             final Integer obj= nodeId;
             child.get(c).remove(obj);
@@ -202,6 +233,12 @@ public class Graph {
      */
     @SuppressWarnings("PMD.OnlyOneReturn")
     public boolean addDependency(final int par,final int chi){
+        if(!(parent.containsKey(par) || child.containsKey(par))){
+            throw new InvalidInputException(MESSAGE);
+        }
+        if(!(parent.containsKey(chi) || child.containsKey(chi))){
+            throw new InvalidInputException(MESSAGE);
+        }
         parent.get(chi).add(par);
         final ArrayList<Boolean>visited=new ArrayList<>(Collections.nCopies(10_000, false));
         final ArrayList<Boolean>recStack=new ArrayList<>(Collections.nCopies(10_000, false));
@@ -212,5 +249,21 @@ public class Graph {
             child.get(par).add(chi);
             return true;
         }
+    }
+
+    /**
+     * This method adds a new node to graph
+     * @param nodeId node Id of the node to be created
+     * @return
+     */
+    @SuppressWarnings("PMD.OnlyOneReturn")
+    public boolean addNode(final int nodeId){
+
+        if(parent.containsKey(nodeId)){
+            return false;
+        }
+        parent.put(nodeId,new ArrayList<>());
+        child.put(nodeId,new ArrayList<>());
+        return true;
     }
 }

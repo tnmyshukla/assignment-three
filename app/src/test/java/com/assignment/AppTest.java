@@ -11,12 +11,13 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class AppTest {
     @Test void unitTest() {
-        App classUnderTest = new App();
+
 
         Graph graph =new Graph();
         try{
@@ -36,5 +37,30 @@ class AppTest {
         arrayList1.add(3);
         arrayList1.add(4);
         assertEquals(arrayList1,graph.getDescendants(2),"Descendants must be same");
+        graph.deleteDependency(3,4);
+        Map<Integer,ArrayList<Integer>>P=graph.getParent();
+        Map<Integer,ArrayList<Integer>>C=graph.getChild();
+        assertTrue(P.get(4).isEmpty());
+        assertTrue(C.get(3).isEmpty());
+        graph.deleteNode(4);
+        assertTrue(P.get(4).isEmpty()&&C.get(4).isEmpty());
+        graph.addDependency(3,4);
+        ArrayList<Integer>childOf3=new ArrayList<>();
+        ArrayList<Integer>parentOf4=new ArrayList<>();
+        childOf3.add(4);
+        parentOf4.add(3);
+        P=graph.getParent();
+        C=graph.getChild();
+        assertEquals(parentOf4,P.get(4));
+        assertEquals(childOf3,C.get(3));
+        assertNull(P.get(1245));
+        assertNull(C.get(1245));
+
+        graph.addNode(1245);
+        P=graph.getParent();
+        C=graph.getChild();
+        assertNotNull(P.get(1245));
+        assertNotNull(C.get(1245));
+
     }
 }
