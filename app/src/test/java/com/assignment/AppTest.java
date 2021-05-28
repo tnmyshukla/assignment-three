@@ -11,56 +11,65 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class AppTest {
-    @Test void unitTest() {
+  @Test
+  void unitTest() {
 
 
-        Graph graph =new Graph();
-        try{
-            System.setIn(new FileInputStream("C:\\Users\\Tanmay Shukla\\IdeaProjects\\AssignmentThree\\app\\src\\test\\java\\com\\assignment\\graph-input.txt"));
-            BufferedReader br=new BufferedReader(new InputStreamReader(System.in));
-            graph.inputGraph();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        ArrayList<Integer>arrayList=new ArrayList<>();
-        arrayList.add(2);
-        assertEquals(arrayList,graph.getImmediateParents(3),"Parent must be same");
-        assertEquals(arrayList,graph.getImmediateChildren(1),"Children must be same");
-        arrayList.add(1);
-        assertEquals(arrayList,graph.getAncestors(3),"Ancestors must be same");
-        ArrayList<Integer>arrayList1=new ArrayList<>();
-        arrayList1.add(3);
-        arrayList1.add(4);
-        assertEquals(arrayList1,graph.getDescendants(2),"Descendants must be same");
-        graph.deleteDependency(3,4);
-        Map<Integer,ArrayList<Integer>>P=graph.getParent();
-        Map<Integer,ArrayList<Integer>>C=graph.getChild();
-        assertTrue(P.get(4).isEmpty());
-        assertTrue(C.get(3).isEmpty());
-        graph.deleteNode(4);
-        assertTrue(P.get(4).isEmpty()&&C.get(4).isEmpty());
-        graph.addDependency(3,4);
-        ArrayList<Integer>childOf3=new ArrayList<>();
-        ArrayList<Integer>parentOf4=new ArrayList<>();
-        childOf3.add(4);
-        parentOf4.add(3);
-        P=graph.getParent();
-        C=graph.getChild();
-        assertEquals(parentOf4,P.get(4));
-        assertEquals(childOf3,C.get(3));
-        assertNull(P.get(1245));
-        assertNull(C.get(1245));
+    Graph graph = new Graph();
 
-        graph.addNode(1245);
-        P=graph.getParent();
-        C=graph.getChild();
-        assertNotNull(P.get(1245));
-        assertNotNull(C.get(1245));
+    Map<Integer, List<Integer>> parentsMap = new ConcurrentHashMap<>();
+    Map<Integer, List<Integer>> childrenMap = new ConcurrentHashMap<>();
+    childrenMap.put(1,new ArrayList<>(List.of(2)));
+    childrenMap.put(2,new ArrayList<>(List.of(3)));
+    childrenMap.put(3,new ArrayList<>(List.of(4)));
+    childrenMap.put(4,new ArrayList<>());
+    parentsMap.put(1,new ArrayList<>());
+    parentsMap.put(2,new ArrayList<>(List.of(1)));
+    parentsMap.put(3,new ArrayList<>(List.of(2)));
+    parentsMap.put(4,new ArrayList<>(List.of(3)));
+    graph.setChildrenMap(childrenMap);
+    graph.setParentsMap(parentsMap);
+    ArrayList<Integer> arrayList = new ArrayList<>();
+    arrayList.add(2);
+    assertEquals(arrayList, graph.getImmediateParents(3), "Parent must be same");
+    assertEquals(arrayList, graph.getImmediateChildren(1), "Children must be same");
+    arrayList.add(1);
+    assertEquals(arrayList, graph.getAncestors(3), "Ancestors must be same");
+    ArrayList<Integer> arrayList1 = new ArrayList<>();
+    arrayList1.add(3);
+    arrayList1.add(4);
+    assertEquals(arrayList1, graph.getDescendants(2), "Descendants must be same");
+    graph.deleteDependency(3, 4);
+    Map<Integer, List<Integer>> P = graph.getParentsMap();
+    Map<Integer, List<Integer>> C = graph.getChildrenMap();
+    assertTrue(P.get(4).isEmpty());
+    assertTrue(C.get(3).isEmpty());
+    graph.deleteNode(4);
+    assertTrue(P.get(4).isEmpty() && C.get(4).isEmpty());
+    graph.addDependency(3, 4);
+    ArrayList<Integer> childOf3 = new ArrayList<>();
+    ArrayList<Integer> parentOf4 = new ArrayList<>();
+    childOf3.add(4);
+    parentOf4.add(3);
+    P = graph.getParentsMap();
+    C = graph.getChildrenMap();
+    assertEquals(parentOf4, P.get(4));
+    assertEquals(childOf3, C.get(3));
+    assertNull(P.get(1245));
+    assertNull(C.get(1245));
 
-    }
+    graph.addNode(1245);
+    P = graph.getParentsMap();
+    C = graph.getChildrenMap();
+    assertNotNull(P.get(1245));
+    assertNotNull(C.get(1245));
+
+  }
 }
