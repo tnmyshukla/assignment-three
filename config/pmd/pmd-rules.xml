@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset name="Custom ruleset">
+    <description>This ruleset detects bad practices in code</description>
+
+    <!-- exclusions for generated files -->
+    <exclude-pattern>.*/test/.*</exclude-pattern>
+
+    <!-- Place to add your rules -->
+    <rule ref="category/java/bestpractices.xml">
+        <exclude name="JUnitTestsShouldIncludeAssert"/>
+    </rule>
+
+    <rule ref="category/java/codestyle.xml">
+        <exclude name="AtLeastOneConstructor"/>
+        <exclude name="ShortVariable"/>
+        <exclude name="ShortClassName"/>
+    </rule>
+
+    <rule ref="category/java/design.xml">
+        <exclude name="LawOfDemeter"/>
+        <exclude name="ExcessiveParameterList"/>
+        <exclude name="DataClass"/>
+        <exclude name="TooManyFields"/>
+        <exclude name="AvoidCatchingGenericException"/>
+        <exclude name="LoosePackageCoupling"/>
+    </rule>
+
+    <rule ref="category/java/documentation.xml">
+        <exclude name="CommentSize"/>
+    </rule>
+
+
+    <rule ref="category/java/errorprone.xml">
+        <exclude name="BeanMembersShouldSerialize"/>
+        <exclude name="DataflowAnomalyAnalysis"/>
+        <exclude name="AvoidDuplicateLiterals"/>
+        <exclude name="MissingSerialVersionUID"/>
+    </rule>
+
+
+    <rule ref="category/java/multithreading.xml"/>
+
+    <rule ref="category/java/performance.xml"/>
+
+    <rule ref="category/java/security.xml"/>
+
+    <rule ref="category/java/codestyle.xml/ClassNamingConventions">
+        <properties>
+            <property name="utilityClassPattern"
+                      value="[A-Z][a-zA-Z0-9]+(Utils?|Helper|Constants?|Builders?|Mappers?|Converters?)"/>
+        </properties>
+    </rule>
+
+    <rule ref="category/java/codestyle.xml/LongVariable">
+        <properties>
+            <property name="minimum" value="55"/>
+            <property name="xpath">
+                <value>
+                    <![CDATA[//VariableDeclaratorId[string-length(@Name) > $minimum]]]>
+                </value>
+            </property>
+        </properties>
+    </rule>
+
+</ruleset>
