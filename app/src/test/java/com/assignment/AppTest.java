@@ -4,6 +4,7 @@
 package com.assignment;
 
 import com.assignment.models.Graph;
+import org.checkerframework.checker.units.qual.C;
 import org.junit.jupiter.api.Test;
 
 import java.io.BufferedReader;
@@ -17,59 +18,105 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class AppTest {
+public class AppTest {
+  Graph graph=new Graph();
+  Map<Integer, List<Integer>> parentsMap = new ConcurrentHashMap<>();
+  Map<Integer, List<Integer>> childrenMap = new ConcurrentHashMap<>();
+    public AppTest(){
+      childrenMap.put(1,new ArrayList<>(List.of(2)));
+      childrenMap.put(2,new ArrayList<>(List.of(3)));
+      childrenMap.put(3,new ArrayList<>(List.of(4)));
+      childrenMap.put(4,new ArrayList<>());
+      parentsMap.put(1,new ArrayList<>());
+      parentsMap.put(2,new ArrayList<>(List.of(1)));
+      parentsMap.put(3,new ArrayList<>(List.of(2)));
+      parentsMap.put(4,new ArrayList<>(List.of(3)));
+      graph.setChildrenMap(childrenMap);
+      graph.setParentsMap(parentsMap);
+    }
   @Test
-  void unitTest() {
+  void testProperGraph() {
+    Map<Integer, List<Integer>> pm = new ConcurrentHashMap<>();
+    Map<Integer, List<Integer>> cm = new ConcurrentHashMap<>();
+    cm.put(1,new ArrayList<>(List.of(2)));
+    cm.put(2,new ArrayList<>(List.of(3)));
+    cm.put(3,new ArrayList<>(List.of(4)));
+    cm.put(4,new ArrayList<>());
+    pm.put(1,new ArrayList<>());
+    pm.put(2,new ArrayList<>(List.of(1)));
+    pm.put(3,new ArrayList<>(List.of(2)));
+    pm.put(4,new ArrayList<>(List.of(3)));
+    assertEquals(pm,graph.getParentsMap());
+    assertEquals(cm,graph.getChildrenMap());
 
-
-    Graph graph = new Graph();
-
-    Map<Integer, List<Integer>> parentsMap = new ConcurrentHashMap<>();
-    Map<Integer, List<Integer>> childrenMap = new ConcurrentHashMap<>();
-    childrenMap.put(1,new ArrayList<>(List.of(2)));
-    childrenMap.put(2,new ArrayList<>(List.of(3)));
-    childrenMap.put(3,new ArrayList<>(List.of(4)));
-    childrenMap.put(4,new ArrayList<>());
-    parentsMap.put(1,new ArrayList<>());
-    parentsMap.put(2,new ArrayList<>(List.of(1)));
-    parentsMap.put(3,new ArrayList<>(List.of(2)));
-    parentsMap.put(4,new ArrayList<>(List.of(3)));
-    graph.setChildrenMap(childrenMap);
-    graph.setParentsMap(parentsMap);
+  }
+  @Test
+  public void testImmediateParents(){
     ArrayList<Integer> arrayList = new ArrayList<>();
     arrayList.add(2);
     assertEquals(arrayList, graph.getImmediateParents(3), "Parent must be same");
-    assertEquals(arrayList, graph.getImmediateChildren(1), "Children must be same");
+  }
+  @Test
+  public void testImmediateChildren(){
+    ArrayList<Integer> arrayList = new ArrayList<>();
+    arrayList.add(4);
+    assertEquals(arrayList, graph.getImmediateChildren(3), "Children must be same");
+  }
+  @Test
+  public void testAncestors(){
+    ArrayList<Integer> arrayList = new ArrayList<>();
+    arrayList.add(2);
     arrayList.add(1);
     assertEquals(arrayList, graph.getAncestors(3), "Ancestors must be same");
-    ArrayList<Integer> arrayList1 = new ArrayList<>();
-    arrayList1.add(3);
-    arrayList1.add(4);
-    assertEquals(arrayList1, graph.getDescendants(2), "Descendants must be same");
+  }
+  @Test
+  public void testDescendants(){
+    ArrayList<Integer> arrayList = new ArrayList<>();
+    arrayList.add(2);
+    arrayList.add(3);
+    arrayList.add(4);
+    assertEquals(arrayList, graph.getDescendants(1), "Descendants must be same");
+  }
+  @Test
+  public void testDeleteDependency(){
     graph.deleteDependency(3, 4);
     Map<Integer, List<Integer>> P = graph.getParentsMap();
     Map<Integer, List<Integer>> C = graph.getChildrenMap();
     assertTrue(P.get(4).isEmpty());
     assertTrue(C.get(3).isEmpty());
+  }
+  @Test
+  public void testDeleteNode(){
     graph.deleteNode(4);
-    assertTrue(P.get(4).isEmpty() && C.get(4).isEmpty());
+    assertTrue(graph.getParentsMap().get(4).isEmpty() && graph.getChildrenMap().get(4).isEmpty());
+  }
+  @Test
+  public void testAddDependency(){
+      graph.deleteDependency(3,4);
     graph.addDependency(3, 4);
     ArrayList<Integer> childOf3 = new ArrayList<>();
     ArrayList<Integer> parentOf4 = new ArrayList<>();
     childOf3.add(4);
     parentOf4.add(3);
-    P = graph.getParentsMap();
-    C = graph.getChildrenMap();
+    Map<Integer, List<Integer>> P = graph.getParentsMap();
+    Map<Integer, List<Integer>> C = graph.getChildrenMap();
     assertEquals(parentOf4, P.get(4));
     assertEquals(childOf3, C.get(3));
-    assertNull(P.get(1245));
-    assertNull(C.get(1245));
-
+  }
+  @Test
+  public void testAddNode(){
     graph.addNode(1245);
-    P = graph.getParentsMap();
-    C = graph.getChildrenMap();
+    Map<Integer, List<Integer>> P = graph.getParentsMap();
+    Map<Integer, List<Integer>> C = graph.getChildrenMap();
     assertNotNull(P.get(1245));
     assertNotNull(C.get(1245));
+  }
+  @Test
+  public void testUncreatedNode(){
+    Map<Integer, List<Integer>> P = graph.getParentsMap();
+    Map<Integer, List<Integer>> C = graph.getChildrenMap();
+    assertNull(P.get(2545));
+    assertNull(C.get(2545));
 
   }
 }

@@ -2,12 +2,12 @@ package com.assignment;
 
 import com.assignment.exceptions.InvalidInputException;
 import com.assignment.models.Graph;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
+
 
 /**
  * This is user manager class to take all the inputs from user and print the outputs to console.
@@ -23,11 +23,7 @@ public class UserManager {
    */
 
   private final Map<Integer, List<Integer>> childrenMap = new ConcurrentHashMap<>();
-  /**
-   * This function displays all the functionalities
-   * that can be used and input codes[1..9] associated with
-   * each of them.
-   */
+
   /**
    * String constants that can be used to print messages without redundancy.
    */
@@ -41,10 +37,11 @@ public class UserManager {
    */
   private static final String MESSAGE3 = "Invalid input enter an integer";
 
-  @SuppressWarnings("PMD.SystemPrintln")
+
   /**
-   * Function to display menu and associated code for functionalities[1..9]
+   * Function to display menu and associated code for functionalities[1..9].
    */
+  @SuppressWarnings("PMD.SystemPrintln")
   public void displayMenu() {
     System.out.println("Select from given options[1..8]");
     System.out.println("1.Get immediate parents");
@@ -249,6 +246,7 @@ public class UserManager {
 
   /**
    * This method is used to add a new node to graph with no dependencies.
+   * @param graph used to pass graph.
    */
   @SuppressWarnings("PMD.SystemPrintln")
   public void addNode(final Graph graph) {
@@ -274,9 +272,10 @@ public class UserManager {
   }
   /**
    * This method takes initial input of graph.
+   * @param graph used to take graph as argument.
    */
-  @SuppressWarnings({"PMD.SystemPrintln", "PMD.AvoidInstantiatingObjectsInLoops"})
 
+  @SuppressWarnings({"PMD.SystemPrintln", "PMD.AvoidInstantiatingObjectsInLoops"})
   public void inputGraph(final Graph graph) {
     System.out.println("Enter number of edges");
     try (Scanner scanner = new Scanner(System.in)) {

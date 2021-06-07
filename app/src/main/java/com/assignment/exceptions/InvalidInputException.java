@@ -5,7 +5,7 @@ package com.assignment.exceptions;
  */
 public class InvalidInputException extends RuntimeException {
   /**
-   * Constructor of custom runtime exception
+   * Constructor of custom runtime exception.
    *
    * @param message to be printed on console
    */
