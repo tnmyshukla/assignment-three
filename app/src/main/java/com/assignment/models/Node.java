@@ -9,11 +9,11 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class Node {
   /**
-   * nodeid that is unique for each node
+   * nodeid that is unique for each node.
    */
   private int nodeId;
   /**
-   * Name of each node
+   * Name of each node.
    */
   private String nodeName;
   /**
@@ -23,11 +23,11 @@ public class Node {
   private Map<String, String> map = new ConcurrentHashMap<>();
 
   /**
-   * Constructor of node class
+   * Constructor of node class.
    *
-   * @param nodeId
-   * @param nodeName
-   * @param map
+   * @param nodeId id of node.
+   * @param nodeName name of node.
+   * @param map description of node.
    */
   public Node(final int nodeId, final String nodeName, final Map<String, String> map) {
     this.map = map;
@@ -36,9 +36,8 @@ public class Node {
   }
 
   /**
-   * Constructor taking only node id as input
-   *
-   * @param nodeId
+   * Constructor taking only node id as input.
+   * @param nodeId id of node.
    */
   public Node(final int nodeId) {
     this.nodeId = nodeId;

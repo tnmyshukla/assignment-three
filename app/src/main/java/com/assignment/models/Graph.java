@@ -1,8 +1,10 @@
 package com.assignment.models;
 
 import com.assignment.exceptions.InvalidInputException;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -22,7 +24,7 @@ public class Graph {
    * Stores directed graph of children.
    */
 
-  private  Map<Integer, List<Integer>> childrenMap = new ConcurrentHashMap<>();
+  private Map<Integer, List<Integer>> childrenMap = new ConcurrentHashMap<>();
   /**
    * Stores details of each node.
    */
@@ -39,25 +41,22 @@ public class Graph {
   public List<Node> getNodes() {
     return nodes;
   }
-  public void setParentsMap(final Map<Integer, List<Integer>> map){
-    this.parentsMap=map;
+
+  public void setParentsMap(final Map<Integer, List<Integer>> map) {
+    this.parentsMap = map;
   }
+
   public void setChildrenMap(Map<Integer, List<Integer>> childrenMap) {
     this.childrenMap = childrenMap;
   }
-
   /**
    * Constructor to initialize parent,child and nodes arraylist.
    */
+
   public Graph() {
-
   }
-
-
-
   /**
-   * This method returns immediate parents list
-   *
+   * This method returns immediate parents list.
    * @param nodeId for which parents are required
    * @return list of parents
    */
@@ -67,12 +66,10 @@ public class Graph {
     }
     return parentsMap.get(nodeId);
   }
-
   /**
-   * This method returns immediate children list
-   *
+   * This method returns immediate children list.
    * @param nodeId for which children are required
-   * @return list of parents
+   * @return list of parents.
    */
   public List<Integer> getImmediateChildren(final int nodeId) {
     if (!(parentsMap.containsKey(nodeId) || childrenMap.containsKey(nodeId))) {
@@ -93,10 +90,8 @@ public class Graph {
       }
     }
   }
-
   /**
    * This method returns the list of ancestors.
-   *
    * @param nodeId for which ancestors are required
    * @return list of ancestors
    */
@@ -112,12 +107,10 @@ public class Graph {
     res.remove(x);
     return res;
   }
-
   /**
    * This method returns the list of descendants.
-   *
-   * @param nodeId for which descendants are required
-   * @return list of descendants
+   * @param nodeId for which descendants are required.
+   * @return list of descendants.
    */
   public List<Integer> getDescendants(final int nodeId) {
     if (!(parentsMap.containsKey(nodeId) || childrenMap.containsKey(nodeId))) {
@@ -152,9 +145,8 @@ public class Graph {
   }
 
   /**
-   * This method is used to delete ode and all of its dependencies
-   *
-   * @param nodeId to be deleted
+   * This method is used to delete ode and all of its dependencies.
+   * @param nodeId to be deleted.
    */
   public void deleteNode(final int nodeId) {
     if (!(parentsMap.containsKey(nodeId) || childrenMap.containsKey(nodeId))) {
@@ -173,7 +165,8 @@ public class Graph {
   }
 
   @SuppressWarnings("PMD.OnlyOneReturn")
-  private boolean checkCycle(final int nodeId, final List<Boolean> visited, final List<Boolean> recStack) {
+  private boolean checkCycle(
+          final int nodeId, final List<Boolean> visited, final List<Boolean> recStack) {
     if (recStack.get(nodeId)) {
       return true;
     }
@@ -193,7 +186,6 @@ public class Graph {
 
   /**
    * This method adds a dependency between a given parent and child node.
-   *
    * @param par parent node
    * @param chi child node
    * @return whether dependencies possible or not
@@ -217,12 +209,10 @@ public class Graph {
       return true;
     }
   }
-
   /**
-   * This method adds a new node to graph
-   *
-   * @param nodeId node Id of the node to be created
-   * @return
+   * This method adds a new node to graph.
+   * @param nodeId node Id of the node to be created.
+   * @return boolean to tell whether added or not.
    */
   @SuppressWarnings("PMD.OnlyOneReturn")
   public boolean addNode(final int nodeId) {
